@@ -1,0 +1,26 @@
+#Projektlogg
+
+
+Testar BTCUSD med 1 hour data under utvecklingsstadiet  
+Backtesten är svår att skriva eftersom flera trades ska kunna vara öppna samtidigt, 
+det finns ingen förutsatt rr eftersom exit alltid är rolling. 
+Det gör att det är komplicerat hur jag ska räkna resultat. 
+Bästa sättet är nog att räkna pnl i procent för varje trade 
+och definiera risken från initial stop loss och sedan analysera resultat utifrån en equity histork. 
+
+Version1:
+Backtest med dynamisk risk (nuvarande equity): 
+Antal trades:           4006 
+Vinnande trades:        836 
+Förlorande trades:      3170 
+Winrate:                20.9% 
+Slut-equity:            39623726.11 
+Genomsnittlig R:        0.398 
+Expectancy per trade: E = 0.398R × 0.5% =0 .199% per trade 
+
+Väldigt absurda resultat. Men inte konstigt eftersom vi har positiv expectency, väldigt många trades och dynamisk risk. 
+
+Sanity test : vi räknar risk i fast cash, alltså baserat på startkapital inte equity. 
+På detta sätt är varje trade värd lika mycket i analysen oavsett equity.
+
+Version2:
