@@ -1,6 +1,7 @@
 # Trend-Following-Strategy
 
 Hypotes
+
 En snabb moving average som är högre än en långsam moving average visar stark bullish trend, ifall dessa villkor är sanna kan trade möjligheter identifieras vid pullbacks (givet att villkoren hålls sanna även fram till signal). Under dessa trendande regimer kan vi utnyttja trenden genom att gå in i nya positioner ju fler pullbacks vi har, ju högre priset stiger. På så sätt håller vi vinster så länge som möjligt och stänger endast när villkoren för trenden inte längre stämmer. Jag tror vi kommer se att strategin presterar under trendande regimer. 
 
 Signaler
