@@ -31,7 +31,7 @@ Förlorande trades:      3170
 Winrate:                20.9%
 Slut-equity:            448323.35
 Genomsnittlig R:        0.398
-Expectancy (R):          0.398
+Expectancy (R):          0.398 # fel här Expectancy ska vara: E = Genomsnittlig R * risk = 0.199%
 Profit Factor (R):       1.620
 Max Drawdown:            -7.96%
   Peak:                  2017-05-25 18:00:00  Equity: 56616.63
