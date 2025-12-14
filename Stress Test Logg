@@ -1,1 +1,26 @@
-
+Efter In sample och Out of sample testing har vi kommit fram till att strategin har starkast edge utan optimering och fungerar på stora likvida kryptovalutor, den är Bitcoin och Ethereum specifik. Vi börjar nu att göra en gemensam backtesting portfölj och lägger in 
+realistiska handelsvillkor för livetrading, commissions och spread. Sedan kommer vi köra monte carlo simulationer. Sist kommer vi analysera resultaten och bestämma total risk samt individuell risk.
+Gemensam backtest:
+Antal trades:           7611
+Vinnande trades:        1553
+Förlorande trades:      6058
+Winrate:                20.4%
+Slut-equity:            694723.16
+Genomsnittlig R:        0.339
+Expectancy (R):          0.339
+Profit Factor (R):       1.521
+Max Drawdown:            -19.67%
+  Peak:                  2018-01-10 23:00:00  Equity: 54190.78
+  Trough:                2018-02-01 15:00:00  Equity: 43532.53
+  DD drop duration:      21 days 16:00:00
+  DD recovery duration:  60 days 02:00:00
+Sharpe (per trade):      0.066
+Trades per year:         965.0
+Sharpe (annualiserad):   2.037
+Open Max Drawdown:       -22.29%
+  Peak:                 2018-01-10 09:00:00  Equity: 55964.33
+  Trough:               2018-02-01 06:00:00  Equity: 43491.66
+CAGR:                    39.60%
+Calmar (CAGR/MaxDD):     2.01
+Sharpe (daglig, ann.):   0.914
+Den största vinsten med denna gemensamma portföljen är helt klart drawdowns.
