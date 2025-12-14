@@ -41,8 +41,10 @@ Max Drawdown:            -7.96%
 Sharpe (per trade):      0.071
 Trades per year:         472.3
 Sharpe (annualiserad):   1.552
+
 Väldigt lovande resultat. Däremot har vi fortfarande en del realism ändringar att ändra. Nu har vi mätt drawdowns på closed trades,
 nu vill vi mäta drawdowns med open trades. Vi lägger även till uträkning av CAGR, Calmar och sharpe baserat på daglig equity (istället för trade-returns) som ytterligare sanity test.
+Version 3:
 Antal trades:           4006
 Vinnande trades:        836
 Förlorande trades:      3170
@@ -65,10 +67,314 @@ Open Max Drawdown:       -35.11%
 CAGR:                    29.50%
 Calmar (CAGR/MaxDD):     3.71
 Sharpe (daglig, ann.):   0.687
+
 Allting är acceptabelt, drawdown gick från -7.96% till -35.11% vilket är mer realistiskt. Vi har i åtanke att dessa resultat endast är bas idéns backtest. Nu vet vi att vi har edge, 
 då kan vi börja optimera och testa på out of sample data. Vi kommer att lägga till adx(14) som trendfilter där strategin endast handlar när adx>20. I detta fall måste vi välja 
 andra marknader som våran out of sample data. Mening med detta är att se ifall strategin fungerar i andra marknadsregimer än den vi testat och optimerat på.
 Vi vill testa marknader som ibland trendar så vi kan se om adx filtrerar bort choppy regimer, vi kommer testa EURUSD, GBPUSD, USDJPY. Om edgen överlever här tyder det på stark edge.
-Vi testar först optimeringen på våran in sample data (BTCUSD):
+Vi testar först optimeringen på våran in sample data (BTCUSD), version 4:
+Antal trades:           2149
+Vinnande trades:        483
+Förlorande trades:      1666
+Winrate:                22.5%
+Slut-equity:            261122.14
+Genomsnittlig R:        0.393
+Expectancy (R):          0.393
+Profit Factor (R):       1.659
+Max Drawdown:            -12.62%
+  Peak:                  2020-10-23 18:00:00  Equity: 289341.29
+  Trough:                2025-09-20 16:00:00  Equity: 252818.66
+  DD drop duration:      1792 days 22:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      0.073
+Trades per year:         253.3
+Sharpe (annualiserad):   1.169
+Open Max Drawdown:       -40.00%
+  Peak:                 2018-11-21 09:00:00  Equity: 346601.11
+  Trough:               2019-01-25 09:00:00  Equity: 207963.38
+CAGR:                    21.51%
+Calmar (CAGR/MaxDD):     1.70
+Sharpe (daglig, ann.):   0.461
+
+Edgen är kvar men det tas betydligt färre trades. Vi kan konstatera av resultaten att ADX har förbättrat trade-kvaliteten, det trades som blir kvar är betydligt bättre men drawdowns ökade samtidigt som Sharpe CAGR 
+och Calmar sjönk. Detta är inte det vi vill se med trendfilter. En förklaring till varför ADX inte hjälper är kan vara att strategin redan är trendföljande och i början av trender är adx fortfarande lågt så trades tas 
+senare i trenden. Ännu en viktig sak som vi ser nu är att drawdown perioden är betydligt mycket längre och den har inte ens återhämtat sig fram till nutid. Nu är våran tanke motbevisad, vi ska alltså inte 
+försöka anpassa ADX period eller tröskel för att få bättre resultat. Det skulle vara overfitting. Däremot kan vi kolla på att använda ADX som risk-skalare. Så vi tar alltså större risk ju högre ADX, 
+t.ex. ADX < 15 = 0.25% risk, 15 < ADX < 20 = 0.5% risk, ADX > 20 = 0.75% risk. Vi testar detta (fortfarande In-Sample) version 5:
+Antal trades:           4006
+Vinnande trades:        836
+Förlorande trades:      3170
+Winrate:                20.9%
+Slut-equity:            500615.43
+Genomsnittlig R:        0.398
+Expectancy (R):          0.398
+Profit Factor (R):       1.620
+Max Drawdown:            -9.70%
+  Peak:                  2017-07-25 08:00:00  Equity: 67976.60
+  Trough:                2017-08-28 17:00:00  Equity: 61382.60
+  DD drop duration:      34 days 09:00:00
+  DD recovery duration:  52 days 08:00:00
+Sharpe (per trade):      0.068
+Trades per year:         472.3
+Sharpe (annualiserad):   1.472
+Open Max Drawdown:       -39.08%
+  Peak:                 2018-11-21 09:00:00  Equity: 529975.91
+  Trough:               2018-11-22 00:00:00  Equity: 322844.46
+CAGR:                    31.20%
+Calmar (CAGR/MaxDD):     3.22
+Sharpe (daglig, ann.):   0.553
+Risk Pct/Antal Trades
+0.0025     832
+0.0050    1025
+0.0075    2149
+
+Våra värden är lite sämre men nästintill samma som basbacktesten. Kollar vi på antalet trades som riskerar mer ser vi att vi ofta är i starka trender när signaler sker så risken ökas kraftigt. Detta leder till mer kapital
+på samma winners, högre CAGR men djupare open drawdowns när flera öppna trades går fel och därmed sämre Calmar. Vi kan konstatera att ADX inte skapar någon edge här eftersom edge redan är korrekt prissatt, vi kan använda
+adx för att skala och styra risk. Det som kan ge mer edge nu är att cappa totala risken, eftersom det troligen är det som leder till större drawdown. Vi prövar sätta en maximal total risk på 2%.
+Version 6:
+Antal trades:           3753
+Vinnande trades:        767
+Förlorande trades:      2986
+Winrate:                20.4%
+Slut-equity:            340888.60
+Genomsnittlig R:        0.313
+Expectancy (R):          0.313
+Profit Factor (R):       1.480
+Max Drawdown:            -12.05%
+  Peak:                  2023-01-22 16:00:00  Equity: 361244.25
+  Trough:                2025-08-10 03:00:00  Equity: 317700.49
+  DD drop duration:      930 days 11:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      0.058
+Trades per year:         442.4
+Sharpe (annualiserad):   1.223
+Open Max Drawdown:       -24.84%
+  Peak:                 2018-11-21 09:00:00  Equity: 206836.33
+  Trough:               2018-11-22 00:00:00  Equity: 155450.12
+CAGR:                    25.39%
+Calmar (CAGR/MaxDD):     2.11
+Sharpe (daglig, ann.):   1.003
+Risk Pct
+0.0025     824
+0.0050    1010
+0.0075    1919
+
+ADX som riskskalning tillsammans med risk cap förbättrar drawdown men försämrar resten av edgen. Vi kan nu konstatera att adx inte tillför något värde varken som riskskalare eller trendfilter. Våran basstrategi fångar
+redan trendinformation på bästa sätt och det är bra eftersom det är väldigt simpla villkor. Så vi slumpar ADX. Nu har vi fått insikt om att strategin fungerar bra som den är utan optimering, nu kan vi gå in på 
+Out Of Sample testing (version 3). Vi testar dessa marknader: EURUSD, XAUUSD, SP500
+Version 3 OOS:
+EURUSD:
+Antal trades:           4831
+Vinnande trades:        898
+Förlorande trades:      3933
+Winrate:                18.6%
+Slut-equity:            -139463.14
+Genomsnittlig R:        -0.157
+C:\Users\linus\PycharmProjects\SMA trend follow\Version3.py:277: RuntimeWarning: invalid value encountered in scalar power
+  cagr = (eq.iloc[-1] / eq.iloc[0]) ** (1 / years) - 1
+Expectancy (R):          -0.157
+Profit Factor (R):       0.768
+Max Drawdown:            -366.85%
+  Peak:                  2012-03-18 19:00:00  Equity: 55145.72
+  Trough:                2025-07-16 17:00:00  Equity: -147155.78
+  DD drop duration:      4867 days 22:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      -0.066
+Trades per year:         349.5
+Sharpe (annualiserad):   -1.237
+Open Max Drawdown:       -344.40%
+  Peak:                 2012-02-27 03:00:00  Equity: 61062.08
+  Trough:               2025-04-10 09:00:00  Equity: -149234.20
+CAGR:                    nan%
+Calmar (CAGR/MaxDD):     nan
+Sharpe (daglig, ann.):   0.313
+
+Finns ingen statistisk tvekan om att strategin inte har edge på EURUSD. Men det betyder inte att den är dålig, den är bara regim-specifik. Strategin bör ha edge i marknader som har asymmetrisk volatilitet, 
+gör snabba, långa impulser, har svag mean reversion, tillåter långsamma trailing exits att fungera. Men EURUSD har istället mycket av det motsatta. Vi går vidare till XAUUSD:
+Antal trades:           4545
+Vinnande trades:        913
+Förlorande trades:      3632
+Winrate:                20.1%
+Slut-equity:            174255.85
+Genomsnittlig R:        0.109
+Expectancy (R):          0.109
+Profit Factor (R):       1.166
+Max Drawdown:            -46.36%
+  Peak:                  2012-03-15 17:00:00  Equity: 51670.75
+  Trough:                2012-11-23 02:00:00  Equity: 27716.73
+  DD drop duration:      252 days 09:00:00
+  DD recovery duration:  396 days 21:00:00
+Sharpe (per trade):      0.027
+Trades per year:         328.7
+Sharpe (annualiserad):   0.485
+Open Max Drawdown:       -50.38%
+  Peak:                 2018-01-03 20:00:00  Equity: 174403.57
+  Trough:               2019-05-29 21:00:00  Equity: 86543.66
+CAGR:                    9.45%
+Calmar (CAGR/MaxDD):     0.20
+Sharpe (daglig, ann.):   0.404
+
+det finns positiv edge men den är svag och väldigt dyr i risk, open drawdown är alldeles för hög och calmar kvoten är icke acceptabel. Vi kör sp500:
+Antal trades:           3753
+Vinnande trades:        774
+Förlorande trades:      2979
+Winrate:                20.6%
+Slut-equity:            -21719.56
+Genomsnittlig R:        -0.076
+Expectancy (R):          -0.076
+Profit Factor (R):       0.886
+Max Drawdown:            -136.72%
+  Peak:                  2013-09-12 18:00:00  Equity: 61169.63
+  Trough:                2024-05-14 16:00:00  Equity: -22463.51
+  DD drop duration:      3896 days 22:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      -0.026
+Trades per year:         272.1
+Sharpe (annualiserad):   -0.428
+Open Max Drawdown:       -577.43%
+  Peak:                 2016-01-13 17:00:00  Equity: 82357.47
+  Trough:               2024-01-16 00:00:00  Equity: -393202.53
+CAGR:                    nan%
+Calmar (CAGR/MaxDD):     nan
+Sharpe (daglig, ann.):   -0.003
+
+Nu kan vi dra slutsatsen att strategin inte är en fungerande generell trendföljare utan en bitcion specifik eller kryptspecifik edge. Detta blir nästa steg, vi testar det mest likvida kryptovalutorna som dukascopy erbjuder
+data för, Ethereum, Litecoin, Cardano, Ripple, ChainLink. Ifall strategin har edge här vet vi att den är krypto specifik, annars är den bitcoin specifik.
+ETH:
+Antal trades:           3801
+Vinnande trades:        764
+Förlorande trades:      3037
+Winrate:                20.1%
+Slut-equity:            345869.85
+Genomsnittlig R:        0.311
+Expectancy (R):          0.311
+Profit Factor (R):       1.474
+Max Drawdown:            -15.79%
+  Peak:                  2019-02-21 02:00:00  Equity: 223398.55
+  Trough:                2019-12-27 19:00:00  Equity: 188128.78
+  DD drop duration:      309 days 17:00:00
+  DD recovery duration:  522 days 15:00:00
+Sharpe (per trade):      0.066
+Trades per year:         481.9
+Sharpe (annualiserad):   1.452
+Open Max Drawdown:       -30.21%
+  Peak:                 2019-02-19 23:00:00  Equity: 259970.97
+  Trough:               2020-01-13 12:00:00  Equity: 181424.72
+CAGR:                    27.79%
+Calmar (CAGR/MaxDD):     1.76
+Sharpe (daglig, ann.):   0.941
+Cardano:
+Antal trades:           2130
+Vinnande trades:        394
+Förlorande trades:      1736
+Winrate:                18.5%
+Slut-equity:            3794.05
+Genomsnittlig R:        -0.087
+Expectancy (R):          -0.087
+Profit Factor (R):       0.874
+Max Drawdown:            -127.45%
+  Peak:                  2022-05-13 03:00:00  Equity: 73450.38
+  Trough:                2025-03-27 17:00:00  Equity: -20164.65
+  DD drop duration:      1049 days 14:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      -0.033
+Trades per year:         521.0
+Sharpe (annualiserad):   -0.749
+Open Max Drawdown:       -120.29%
+  Peak:                 2022-09-24 13:00:00  Equity: 99392.31
+  Trough:               2025-03-27 17:00:00  Equity: -20164.65
+CAGR:                    -46.70%
+Calmar (CAGR/MaxDD):     -0.37
+Sharpe (daglig, ann.):   0.452
+Ripple:
+Antal trades:           2993
+Vinnande trades:        557
+Förlorande trades:      2436
+Winrate:                18.6%
+Slut-equity:            237420.81
+Genomsnittlig R:        0.250
+Expectancy (R):          0.250
+Profit Factor (R):       1.365
+Max Drawdown:            -62.50%
+  Peak:                  2018-11-08 03:00:00  Equity: 92716.61
+  Trough:                2020-07-28 10:00:00  Equity: 34771.43
+  DD drop duration:      628 days 07:00:00
+  DD recovery duration:  1008 days 23:00:00
+Sharpe (per trade):      0.045
+Trades per year:         401.2
+Sharpe (annualiserad):   0.893
+Open Max Drawdown:       -68.37%
+  Peak:                 2018-10-12 07:00:00  Equity: 105484.80
+  Trough:               2020-07-27 16:00:00  Equity: 33368.29
+CAGR:                    23.21%
+Calmar (CAGR/MaxDD):     0.37
+Sharpe (daglig, ann.):   0.627
+Litecoin:
+Antal trades:           3736
+Vinnande trades:        642
+Förlorande trades:      3094
+Winrate:                17.2%
+Slut-equity:            -37229.23
+Genomsnittlig R:        -0.093
+C:\Users\linus\PycharmProjects\SMA trend follow\Version3.py:277: RuntimeWarning: invalid value encountered in scalar power
+  cagr = (eq.iloc[-1] / eq.iloc[0]) ** (1 / years) - 1
+Expectancy (R):          -0.093
+Profit Factor (R):       0.865
+Max Drawdown:            -153.63%
+  Peak:                  2021-09-24 07:00:00  Equity: 70231.57
+  Trough:                2025-10-30 01:00:00  Equity: -37667.22
+  DD drop duration:      1496 days 18:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      -0.026
+Trades per year:         521.8
+Sharpe (annualiserad):   -0.602
+Open Max Drawdown:       -106.16%
+  Peak:                 2020-12-08 01:00:00  Equity: 629365.65
+  Trough:               2025-09-27 11:00:00  Equity: -38744.69
+CAGR:                    nan%
+Calmar (CAGR/MaxDD):     nan
+Sharpe (daglig, ann.):   0.025
+Chainlink:
+Antal trades:           1997
+Vinnande trades:        413
+Förlorande trades:      1584
+Winrate:                20.7%
+Slut-equity:            74225.22
+Genomsnittlig R:        0.049
+Expectancy (R):          0.049
+Profit Factor (R):       1.074
+Max Drawdown:            -28.41%
+  Peak:                  2024-10-04 03:00:00  Equity: 88023.50
+  Trough:                2025-08-06 15:00:00  Equity: 63015.20
+  DD drop duration:      306 days 12:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      0.014
+Trades per year:         487.6
+Sharpe (annualiserad):   0.307
+Open Max Drawdown:       -66.02%
+  Peak:                 2021-10-08 10:00:00  Equity: 108879.99
+  Trough:               2021-11-04 06:00:00  Equity: 36997.01
+CAGR:                    10.12%
+Calmar (CAGR/MaxDD):     0.36
+Sharpe (daglig, ann.):   0.363
+
+
+| Marknad | Expectancy (R) | PF       | CAGR      | Max DD    | Open DD   | Bedömning    |
+| ------- | -------------- | -------- | --------- | --------- | --------- | ------------ |
+| **BTC** | ~0.40          | 1.62     | ~30%      | ~8–10%    | ~35%      | Stark        |
+|   ETH   | 0.31           | 1.47     | 27.8%     | 15.8%     | 30.2%     | Stark        |
+| XRP     | 0.25           | 1.37     | 23.2%     | 62.5%     | 68.4%     | Edge men dyr |
+| LINK    | 0.05           | 1.07     | 10.1%     | 28.4%     | 66.0%     | Marginell    |
+| ADA     | −0.09          | 0.87     | −46.7%    | 127%      | 120%      | Ingen Edge   |
+| LTC     | −0.09          | 0.86     |           | 154%      | 106%      | Ingen Edge   |
+
+detta är väldigt viktig data, det visar att det inte finns en generell krypto edge, utan endast btc och eth edge. Den har edge i stora, strukturellt dominerande kryptovalutor med djup likviditet. Modellen antar att trender
+existerar, trender dör långsamt och att pullbakcs är en continutation, dessa villkor är speglade i bitcoin och ethereum men inte alt coins. Slutsats: vi kommer gå vidare med BTC/USD och ETH/USD. Nu har vi accepterat Out of
+Sample fall som både misslyckats och lyckats, vi har dragit slutsatser från resultaten och hittat vart våran edge finns. Nästa steg i processen är att backtesta en gemensam Bitcion och Ether portfölj, lägga in commissions,
+slippage och spread. Samt köra Monte Carlo, trade-distribution-shuffling och worst-case drawdown paths.
+
+
+
+
 
 
