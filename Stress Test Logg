@@ -23,4 +23,5 @@ Open Max Drawdown:       -22.29%
 CAGR:                    39.60%
 Calmar (CAGR/MaxDD):     2.01
 Sharpe (daglig, ann.):   0.914
-Den största vinsten med denna gemensamma portföljen är helt klart drawdowns.
+Den största vinsten med denna gemensamma portföljen är helt klart drawdowns. Vi gick från -35% open dd på btc, -30% open dd på eth till en gemensam open dd på -22.29%. Nu kommer vi till stress testerna. Vi börjar först med
+commissions och spreads.
