@@ -42,6 +42,27 @@ Sharpe (per trade):      0.071
 Trades per year:         472.3
 Sharpe (annualiserad):   1.552
 Väldigt lovande resultat. Däremot har vi fortfarande en del realism ändringar att ändra. Nu har vi mätt drawdowns på closed trades,
-nu vill vi mäta riktiga drawdown
-
+nu vill vi mäta drawdowns med open trades. Vi lägger även till uträkning av CAGR, Calmar och sharpe baserat på daglig equity (istället för trade-returns) som ytterligare sanity test.
+Antal trades:           4006
+Vinnande trades:        836
+Förlorande trades:      3170
+Winrate:                20.9%
+Slut-equity:            448323.35
+Genomsnittlig R:        0.398
+Expectancy (R):          0.398
+Profit Factor (R):       1.620
+Max Drawdown:            -7.96%
+  Peak:                  2017-05-25 18:00:00  Equity: 56616.63
+  Trough:                2017-07-13 12:00:00  Equity: 52108.98
+  DD drop duration:      48 days 18:00:00
+  DD recovery duration:  53 days 01:00:00
+Sharpe (per trade):      0.071
+Trades per year:         472.3
+Sharpe (annualiserad):   1.552
+Open Max Drawdown:       -35.11%
+  Peak:                 2018-11-21 09:00:00  Equity: 393309.75
+  Trough:               2018-11-22 00:00:00  Equity: 255222.12
+CAGR:                    29.50%
+Calmar (CAGR/MaxDD):     3.71
+Sharpe (daglig, ann.):   0.687
 
