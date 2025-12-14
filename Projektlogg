@@ -65,4 +65,10 @@ Open Max Drawdown:       -35.11%
 CAGR:                    29.50%
 Calmar (CAGR/MaxDD):     3.71
 Sharpe (daglig, ann.):   0.687
+Allting är acceptabelt, drawdown gick från -7.96% till -35.11% vilket är mer realistiskt. Vi har i åtanke att dessa resultat endast är bas idéns backtest. Nu vet vi att vi har edge, 
+då kan vi börja optimera och testa på out of sample data. Vi kommer att lägga till adx(14) som trendfilter där strategin endast handlar när adx>20. I detta fall måste vi välja 
+andra marknader som våran out of sample data. Mening med detta är att se ifall strategin fungerar i andra marknadsregimer än den vi testat och optimerat på.
+Vi vill testa marknader som ibland trendar så vi kan se om adx filtrerar bort choppy regimer, vi kommer testa EURUSD, GBPUSD, USDJPY. Om edgen överlever här tyder det på stark edge.
+Vi testar först optimeringen på våran in sample data (BTCUSD):
+
 
