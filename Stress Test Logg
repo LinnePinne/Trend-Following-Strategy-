@@ -24,4 +24,33 @@ CAGR:                    39.60%
 Calmar (CAGR/MaxDD):     2.01
 Sharpe (daglig, ann.):   0.914
 Den största vinsten med denna gemensamma portföljen är helt klart drawdowns. Vi gick från -35% open dd på btc, -30% open dd på eth till en gemensam open dd på -22.29%. Nu kommer vi till stress testerna. Vi börjar först med
-commissions och spreads.
+commissions_fees på 0.065% enligt FTMO:
+Antal trades:           7611
+Vinnande trades:        1449
+Förlorande trades:      6162
+Winrate:                19.0%
+Slut-equity:            322468.11
+Genomsnittlig R:        0.143
+Expectancy (R):          0.143
+Profit Factor (R):       1.175
+Max Drawdown:            -41.62%
+  Peak:                  2021-07-27 01:00:00  Equity: 510057.89
+  Trough:                2025-09-21 23:00:00  Equity: 297753.38
+  DD drop duration:      1517 days 22:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      0.028
+Trades per year:         965.0
+Sharpe (annualiserad):   0.857
+Open Max Drawdown:       -42.08%
+  Peak:                 2021-07-26 22:00:00  Equity: 514551.53
+  Trough:               2025-09-22 01:00:00  Equity: 298046.51
+CAGR:                    26.66%
+Calmar (CAGR/MaxDD):     0.64
+Sharpe (daglig, ann.):   0.627
+Vi har fortfarande edge men detta är inte tradebart. Innan vi slumpar strategin vill vi kolla ifall vi kan förbättre exits. Vi ser många spikar i open equity curve vilket innebär att många vinster blir mindre än vad de kan 
+bli vid closed. Vi har testat partial take profits, kapat risken till max 4 trades åt gången utan att förbättra drawdowns, detta tyder på att drawdown skapas av långa sekvenser av små negativa R, så det mest logiska hade 
+faktiskt varit att implementera något slags filter för att ta bort choppy trades. ADX funkade inte, men vi kan använda det på en högre timeframe för att definiera trendighet. Eller så kan vi lägga till slope på EMA_slow. 
+Eller så kan vi använda att volatility expansion filter
+
+
+
