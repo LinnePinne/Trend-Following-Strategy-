@@ -49,8 +49,219 @@ Calmar (CAGR/MaxDD):     0.64
 Sharpe (daglig, ann.):   0.627
 Vi har fortfarande edge men detta är inte tradebart. Innan vi slumpar strategin vill vi kolla ifall vi kan förbättre exits. Vi ser många spikar i open equity curve vilket innebär att många vinster blir mindre än vad de kan 
 bli vid closed. Vi har testat partial take profits, kapat risken till max 4 trades åt gången utan att förbättra drawdowns, detta tyder på att drawdown skapas av långa sekvenser av små negativa R, så det mest logiska hade 
-faktiskt varit att implementera något slags filter för att ta bort choppy trades. ADX funkade inte, men vi kan använda det på en högre timeframe för att definiera trendighet. Eller så kan vi lägga till slope på EMA_slow. 
-Eller så kan vi använda att volatility expansion filter
+faktiskt varit att implementera något slags filter för att ta bort choppy trades. ADX funkade inte, men vi kan använda det på en högre timeframe för att definiera trendighet. Vi kan också lägga en väldigt hög partial 
+take profit för att säkra vinster i otroligt starka trender. Vi börjar med att använda ADX(14) baserat på 4 timmars data och anäver 40 som tröskel:
+Antal trades:           1327
+Vinnande trades:        303
+Förlorande trades:      1024
+Winrate:                22.8%
+Slut-equity:            72900.83
+Genomsnittlig R:        0.345
+Expectancy (R):          0.345
+Profit Factor (R):       1.508
+Max Drawdown:            -7.97%
+  Peak:                  2023-01-17 06:00:00  Equity: 76835.28
+  Trough:                2024-11-11 20:00:00  Equity: 70713.87
+  DD drop duration:      664 days 14:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      0.075
+Trades per year:         169.4
+Sharpe (annualiserad):   0.973
+Open Max Drawdown:       -9.17%
+  Peak:                 2023-01-16 10:00:00  Equity: 77934.72
+  Trough:               2024-11-10 02:00:00  Equity: 70787.92
+CAGR:                    4.92%
+Calmar (CAGR/MaxDD):     0.62
+Sharpe (daglig, ann.):   0.564
+Detta är starka resultat, det visar att strategin har väldigt bra edge i riktigt starka trendfaser. Nu har vi lekt runt en del med filter och olika värden, för att testa robusthet och se till att vi inte överanpassat 
+till historisk data så testar vi andra värden runt 40, 35-45. Har vi ungefär samma edge med dessa värden vet vi att 40 inte är något magiskt tal som är överanpassat till datan.
 
+viktigaste resultaten för 35:
+Antal trades:           2072
+Vinnande trades:        424
+Förlorande trades:      1648
+Winrate:                20.5%
+Slut-equity:            65056.16
+Genomsnittlig R:        0.145
+Expectancy (R):          0.145
+Profit Factor (R):       1.205
+Open Max Drawdown:       -17.64%
+  Peak:                 2023-01-16 10:00:00  Equity: 76958.17
+  Trough:               2025-06-13 02:00:00  Equity: 63384.23
+CAGR:                    3.40%
+Calmar (CAGR/MaxDD):     0.21
+Sharpe (daglig, ann.):   0.390
+
+och för 45: 
+Antal trades:           797
+Vinnande trades:        190
+Förlorande trades:      607
+Winrate:                23.8%
+Slut-equity:            65156.24
+Genomsnittlig R:        0.380
+Expectancy (R):          0.380
+Profit Factor (R):       1.589
+Open Max Drawdown:       -6.96%
+  Peak:                 2023-01-16 10:00:00  Equity: 70027.59
+  Trough:               2025-10-19 16:00:00  Equity: 65156.24
+CAGR:                    3.43%
+Calmar (CAGR/MaxDD):     0.63
+Sharpe (daglig, ann.):   0.467
+vi ser att resultaten håller ihop så detta trendfilter passerar överanpassnings testet. Vi har fortfarande många spikar i equity curven, så ännu en ytterligare grej att kolla är hög partial tp, vid stora rörelser vill vi 
+rida trenden men också säkra vinsterna innan trenden vänder. Vi testar partial take profit på 20r och stänger 50% av positionen där (med adx > 40):
+Antal trades:           1327
+Vinnande trades:        305
+Förlorande trades:      1022
+Winrate:                23.0%
+Slut-equity:            169335.18
+Genomsnittlig R:        0.360
+Expectancy (R):          0.360
+Profit Factor (R):       1.531
+Max Drawdown:            -14.27%
+  Peak:                  2017-12-12 00:00:00  Equity: 50000.00
+  Trough:                2018-05-25 18:00:00  Equity: 42864.25
+  DD drop duration:      164 days 18:00:00
+  DD recovery duration:  246 days 00:00:00
+Sharpe (per trade):      0.087
+Trades per year:         169.4
+Sharpe (annualiserad):   1.131
+Open Max Drawdown:       -16.21%
+  Peak:                 2023-01-16 10:00:00  Equity: 184647.63
+  Trough:               2024-11-10 02:00:00  Equity: 154716.80
+CAGR:                    16.80%
+Calmar (CAGR/MaxDD):     1.18
+Sharpe (daglig, ann.):   0.725
+Detta säger väldigt mycket. Vårat system har en positiv skew, alltså att ganska få trades står för de riktigt stora vinsterna därför är små skillnader i exit time väldigt påverkande för equity-skillnader. Vär vi lägger en 
+otroligt hög partial take profit under extremt trendande regimer monetariserar vi tailen istället för att kapa den samtidigt som vi bibeyåller convexity där vi har kvar 50% av positionen. Nu kommer vi till överanpassning,
+detta är inte statistisk optimering på samma sätt som ADX hade kunnat vara det, detta är snarare ett resultat av att vi frågade oss själva: Hur monetariserar vi extrema winners utan att döda convexity? Vi har designat en
+exit som fungerar specifikt när marknaden gör extremt långa trender, vilket inte är fel men det innebär att strategin är helt regimberoende. Vi testar tp vid 15 och 25 r bara för att vara säkra:
+
+viktigaste resultaten för 15:
+Antal trades:           1327
+Vinnande trades:        307
+Förlorande trades:      1020
+Winrate:                23.1%
+Slut-equity:            159454.43
+Genomsnittlig R:        0.330
+Expectancy (R):          0.330
+Profit Factor (R):       1.488
+Open Max Drawdown:       -15.86%
+  Peak:                 2023-01-16 10:00:00  Equity: 177291.63
+  Trough:               2024-11-10 02:00:00  Equity: 149174.36
+CAGR:                    15.91%
+Calmar (CAGR/MaxDD):     1.11
+Sharpe (daglig, ann.):   0.727
+
+Och för 25: 
+Antal trades:           1327
+Vinnande trades:        305
+Förlorande trades:      1022
+Winrate:                23.0%
+Slut-equity:            172764.86
+Genomsnittlig R:        0.370
+Expectancy (R):          0.370
+Profit Factor (R):       1.546
+Open Max Drawdown:       -15.97%
+  Peak:                 2023-01-16 10:00:00  Equity: 187284.92
+  Trough:               2024-11-10 02:00:00  Equity: 157380.57
+CAGR:                    17.10%
+Calmar (CAGR/MaxDD):     1.20
+Sharpe (daglig, ann.):   0.820
+Strategin passerar helt klart overfitting testet. Nu vill vi göra ett sista test där vi kör exakt detta system vi har nu på bitcoin och ethereum separat.
+Bitcoin:
+Antal trades:           744
+Vinnande trades:        171
+Förlorande trades:      573
+Winrate:                23.0%
+Slut-equity:            109145.66
+Genomsnittlig R:        0.318
+Expectancy (R):          0.318
+Profit Factor (R):       1.464
+Max Drawdown:            -20.41%
+  Peak:                  2023-01-16 17:00:00  Equity: 118573.83
+  Trough:                2024-11-11 10:00:00  Equity: 94374.63
+  DD drop duration:      664 days 17:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      0.079
+Trades per year:         88.5
+Sharpe (annualiserad):   0.745
+Open Max Drawdown:       -21.50%
+  Peak:                 2023-01-16 11:00:00  Equity: 120255.78
+  Trough:               2024-11-10 08:00:00  Equity: 94403.89
+CAGR:                    9.68%
+Calmar (CAGR/MaxDD):     0.47
+Sharpe (daglig, ann.):   0.610
+
+Ethereum: 
+Antal trades:           606
+Vinnande trades:        138
+Förlorande trades:      468
+Winrate:                22.8%
+Slut-equity:            119464.53
+Genomsnittlig R:        0.459
+Expectancy (R):          0.459
+Profit Factor (R):       1.685
+Max Drawdown:            -10.95%
+  Peak:                  2019-02-19 11:00:00  Equity: 97476.88
+  Trough:                2020-03-12 03:00:00  Equity: 86806.10
+  DD drop duration:      386 days 16:00:00
+  DD recovery duration:  387 days 15:00:00
+Sharpe (per trade):      0.099
+Trades per year:         77.6
+Sharpe (annualiserad):   0.868
+Open Max Drawdown:       -14.60%
+  Peak:                 2019-02-19 01:00:00  Equity: 101371.50
+  Trough:               2020-03-11 06:00:00  Equity: 86574.48
+CAGR:                    11.76%
+Calmar (CAGR/MaxDD):     1.07
+Sharpe (daglig, ann.):   0.644
+Strategin har lite bättre edge på Ethereum så vi vill vikta mer på Ehtereum. Vi kollar de kryptomarknaderna som hade någorlunda edge med bas strategin, nämnligen chainlink och ripple
+chainlink:
+Antal trades:           252
+Vinnande trades:        37
+Förlorande trades:      215
+Winrate:                14.7%
+Slut-equity:            31668.31
+Genomsnittlig R:        -0.291
+Expectancy (R):          -0.291
+Profit Factor (R):       0.596
+Max Drawdown:            -36.66%
+  Peak:                  2021-09-25 19:00:00  Equity: 50000.00
+  Trough:                2025-10-19 19:00:00  Equity: 31668.31
+  DD drop duration:      1485 days 00:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      -0.156
+Trades per year:         63.2
+Sharpe (annualiserad):   -1.241
+Open Max Drawdown:       -40.85%
+  Peak:                 2022-05-12 10:00:00  Equity: 53536.72
+  Trough:               2025-10-19 19:00:00  Equity: 31668.31
+CAGR:                    -10.63%
+Calmar (CAGR/MaxDD):     -0.29
+Sharpe (daglig, ann.):   -0.900
+
+ripple:
+Antal trades:           418
+Vinnande trades:        76
+Förlorande trades:      342
+Winrate:                18.2%
+Slut-equity:            69793.14
+Genomsnittlig R:        0.189
+Expectancy (R):          0.189
+Profit Factor (R):       1.267
+Max Drawdown:            -23.16%
+  Peak:                  2022-09-23 16:00:00  Equity: 71664.25
+  Trough:                2024-11-13 15:00:00  Equity: 55068.39
+  DD drop duration:      781 days 23:00:00
+  DD recovery duration:  Not recovered
+Sharpe (per trade):      0.048
+Trades per year:         56.4
+Sharpe (annualiserad):   0.358
+Open Max Drawdown:       -24.49%
+  Peak:                 2022-09-23 12:00:00  Equity: 72699.83
+  Trough:               2024-11-14 11:00:00  Equity: 54897.18
+CAGR:                    4.59%
+Calmar (CAGR/MaxDD):     0.20
+Sharpe (daglig, ann.):   0.309
 
 
