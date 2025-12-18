@@ -1,16 +1,35 @@
-Vi kommer att börja med en monte carlo simulation där båda marknaderna riskerar lika mycket, 0,5% varje trade. En bootstrap Monte Carlo kommer slumpmässigt omordna alla trades med samma antal trades per simulering så winrate kommer vara densamma. 
-Vi vill se hur illa det kan bli i trade distributionen, vi kommer ta fram: Max Drawdown (distribution), Final Equity (distribution), Worst 5% DD, Probability of ruin / rule break, Median CAGR, 95% confidence band för equity curve. 10 000 simulationer:
+Vi kommer att börja med en monte carlo simulation där båda marknaderna riskerar lika mycket, 0,5% varje trade. En bootstrap Monte Carlo kommer slumpmässigt omordna alla trades med samma antal trades per simulering, 
+så winrate kommer vara densamma. Vi vill se hur illa det kan bli i trade distributionen, vi kommer ta fram: Max Drawdown (distribution), Final Equity (distribution), Worst 5% DD, Probability of ruin / rule break, 
+Median CAGR, 95% confidence band för equity curve. 10 000 simulationer:
 Median final equity:      169027.65
 5th percentile equity:   109636.03
 Worst-case equity:       35388.33
 Median max DD:           -15.17%
 95th percentile max DD:  -30.69%
 Worst max DD observed:   -86.32%
-Sammanfattning: Kapitalutfall i både median och 5:e percentilen visar tydlig edge. En av 20 paths för väldigt djup drawdown (-30.7%) jämfört med median drawdown (-15.2%), värsta simuleringen är väldigt extrem men det är väldigt få simuleringar så det är inte lika relevant.
-Strategin är helt klart tradebart från detta men eftersom vi handlar funded konton hos FTMO vill vi undivka -10% drawdown, vi undivker detta till viss del genom att planera nerskalning av risk vid t.ex. -7% drawdown. Men vi vill fortfarande se mjukare resultat här.
-Frågan är nu om vi vill sänka portföljrisken (just nu har vi 1%) eller om en viktning kan ge bättre resultat. ERC eller Equal Risk Contribution har som mål att varje marknad ska bidra tilla mycket till portföljens risk, så volatilare marknader ska ha lägre vikt. 
-Tangency weights har som mål att maximera portföljens sharpe. Vi kollar först och främst på ERC och bestämmer vikt därifrån med liten lutning mot vad tangency weights säger.
+Sammanfattning: Kapitalutfall i både median och 5:e percentilen visar tydlig edge. En av 20 paths för väldigt djup drawdown (-30.7%) jämfört med median drawdown (-15.2%), värsta simuleringen är väldigt extrem men det är 
+väldigt få simuleringar så det är inte lika relevant. Strategin är helt klart tradebart från detta men eftersom vi handlar funded konton hos FTMO vill vi undivka -10% drawdown, vi undivker detta till viss del genom att planera 
+nerskalning av risk vid t.ex. -7% drawdown. Men vi vill fortfarande se mjukare resultat här. Frågan är nu om vi vill sänka portföljrisken (just nu har vi 1%) eller om en viktning kan ge bättre resultat. 
+ERC eller Equal Risk Contribution har som mål att varje marknad ska bidra tilla mycket till portföljens risk, så volatilare marknader ska ha lägre vikt. Tangency weights har som mål att maximera portföljens sharpe. 
+Vi kollar först och främst på ERC och bestämmer vikt därifrån med liten lutning mot vad tangency weights säger.
 ERC weights: [BTC: 0.47130465 ETH: 0.52869535]
 Tangecny weights: BTC: [0.46860642 ETH: 0.53139358]
-
+Att ERC ger välidgt lika vikter betyder att korrelation är låg, annats hade vikterna pressats ner mer, likadana tangency weights innebär att vi får nästan max sharpe med de ursprungliga vikterna. Eftersom skillnaden är så liten,
+behåller vi 0.5% risk för båda marknaderna.
+Sanningen är den att strategin varit flat de senaste 5 åren. Den gjorde väldigt höga returns 2018-2020:
+      Year-End Equity  Return %
+Time                           
+2018         93508.41     90.69
+2019        118098.21     26.30
+2020        159872.98     35.37
+2021        164675.79      3.00
+2022        162728.02     -1.18
+2023        165765.17      1.87
+2024        161594.45     -2.52
+2025        169335.18      4.79
+Hade detta varit en anna marknad och vi hade tillgång till fler år med samma edge frekvens hade jag fortfarande övervägt att anävnda strategin. Men eftersom detta är krypto, en relativi ny marknad måste vi ställa oss frågan: 
+“Var 2018–2020 en engångsperiod driven av adoptions-hype, och är den typen av trendregimer i krypto strukturellt osannolika framåt?”. Svartet på den frågan är högst sannolikt ja. Hade strategin varit regimberoende av trender borde den
+också haft högre returns under andra trendregimer efter 2020, vilket det varit många av. Före 2020 var dessutom kryptomarknaden mer retail-driven vilket skapade en dynamik av långa feedback-loops mellan hype och adoption, vilket i 
+sin tur skapade långa trender. Efter 2020 har krypto blivit mer institutionaliserat. Om vi blickar framåt är det osannolikt att liknande regimer från 2018-2020 kommer tillbaka just eftersom det inte längre är retail-drivet och narrativ
+dominerat. Slutsatsen är att strategin har en edge men ingenstanns att applicera den. Vi lägger detta på hyllan.
 
